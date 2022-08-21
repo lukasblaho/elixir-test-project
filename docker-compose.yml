@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+    volumes:
+      - .:/app
+    command: ["mix", "deps.get"]    
+    ports: 
+      - "4000:4000"
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: Msx9Bg9B
+    ports:
+      - 5432:5432
+
+  pulsar:
+    image: apachepulsar/pulsar
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: ["bin/pulsar", "standalone"]
+
+  pulsar-manager:
+    image: "apachepulsar/pulsar-manager:v0.2.0"
+    ports:
+      - "9527:9527"
+      - "7750:7750"
+    depends_on:
+      - pulsar
+    environment:
+      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+ 
+    
